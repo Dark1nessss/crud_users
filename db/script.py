@@ -31,7 +31,7 @@ def inserirUtilizador(
         "primeiro_nome": primeiro_nome,
         "ultimo_nome": ultimo_nome,
         "email": email,
-        "morada": "morada",
+        "morada": morada,
         "telefone": telefone,
         "descricao": descricao
     }
