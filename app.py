@@ -9,18 +9,21 @@ mongo = PyMongo(app)
 
 # Todos os dados utilizadores
 utilizadores_mongodb = mongo.db.utilizadores.find()
-users = list(utilizadores_mongodb)
+
 
 @app.route("/")
 def index():
+    users = list(utilizadores_mongodb)
+    for i in users:
+        print(i)
     return render_template("index.html", users=users, str=str)
 
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
     if request.method == "POST":
-        name = request.form["name"]
+        username = request.form["username"]
         email = request.form["email"]
-        users.append({"id": len(users) + 1, "name": name, "email": email})
+        mongo.db.utilizadores.insert_one({"username": username, "email": email})
         return redirect(url_for("index"))
     return render_template("add_user.html")
 
