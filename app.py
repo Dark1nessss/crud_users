@@ -33,6 +33,7 @@ def edit_user(user_id):
     if request.method == "POST":
         user["name"] = request.form["name"]
         user["email"] = request.form["email"]
+        user["date"] = request.form["date"]
         return redirect(url_for("index"))
     return render_template("edit_user.html", user=user)
 
