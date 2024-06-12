@@ -50,6 +50,10 @@ def pesquisarUserUsername(Username):
     for res in documento_query:
         print(res)
 
+def limpar():
+    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
+    colecao_utilizadores.drop()
+
 setupDB("managment_crud_users")
 input_insertornah = int(input("Queres inserir um user? [0/1]: "))
 if input_insertornah == 1:
@@ -60,10 +64,12 @@ if input_insertornah == 1:
     morada = input("Morada: ")
     telefone = input("Telefone: ")
     descricao = input("Descricao: ")
-inserirUtilizador(username, primeiro_nome, ultimo_nome, email, morada, telefone, descricao)
+    inserirUtilizador(username, primeiro_nome, ultimo_nome, email, morada, telefone, descricao)
 
 input_pesquisarornah = int(input("Queres pesquisar um user? [0/1]: "))
 if input_pesquisarornah == 1:
     nomedogajo = str(input("Diz o nome do gajo: "))
     pesquisarUserUsername(nomedogajo)
-    
+input_limparornah = int(input("Limpar a base de dados?[0/1] "))
+if input_limparornah == 1:
+    limpar()
