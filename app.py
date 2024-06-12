@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     users = pesquisarTodosUtilizadores()
-    return render_template("index.html", users=users)
+    return render_template("index.html", users=users, str=str)
 
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
