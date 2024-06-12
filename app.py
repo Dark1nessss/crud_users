@@ -9,10 +9,17 @@ mongo = PyMongo(app)
 
 # Todos os dados utilizadores
 utilizadores_mongodb = mongo.db.utilizadores.find()
-users = list(utilizadores_mongodb)
+
+# Se meter aqui o users
+# jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'id'
+#users = list(utilizadores_mongodb)
+
+
 # Primeiro tentar buscar os users a partir do mongodb
 @app.route("/")
 def index():
+    # Mas aqui nao mostra os users, mesmo existindo dados na tabela
+    users = list(utilizadores_mongodb)
     for i in users:
         print(i)
     return render_template("index.html", users=users, str=str)
