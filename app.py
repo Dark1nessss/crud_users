@@ -13,7 +13,7 @@ def index():
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
     if request.method == "POST":
-        username = request.form["username"]
+        name = request.form["name"]
         email = request.form["email"]
         inserirUtilizador(username, email)
         return redirect(url_for("index"))
@@ -23,6 +23,7 @@ def add_user():
 def edit_user(user_id):
     user = pesquisarUserPorID(ObjectId(user_id))
     if request.method == "POST":
+        display_test
         username = request.form["username"]
         email = request.form["email"]
         atualizarUtilizador(ObjectId(user_id), username, email)

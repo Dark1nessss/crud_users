@@ -43,6 +43,7 @@ def deletarUtilizador(user_id):
     colecao_utilizadores.delete_one({"_id": user_id})
     print(f"Utilizador com ID {user_id} deletado!")
 
+
 def limpar():
     base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
     colecao_utilizadores.drop()
