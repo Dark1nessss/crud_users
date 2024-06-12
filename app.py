@@ -23,12 +23,11 @@ def add_user():
 def edit_user(user_id):
     user = pesquisarUserPorID(ObjectId(user_id))
     if request.method == "POST":
-        display_test
         username = request.form["username"]
         email = request.form["email"]
         atualizarUtilizador(ObjectId(user_id), username, email)
         return redirect(url_for("index"))
-    return render_template("edit_user.html", user=user)
+    return render_template("edit_user.html", user=user, str=str)
 
 @app.route("/delete_user/<string:user_id>")
 def delete_user(user_id):
