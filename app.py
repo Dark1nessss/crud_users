@@ -17,7 +17,8 @@ def add_user():
     if request.method == "POST":
         name = request.form["name"]
         email = request.form["email"]
-        users.append({"id": len(users) + 1, "name": name, "email": email})
+        date = request.form["date"]
+        users.append({"id": len(users) + 1, "name": name, "email": email, "date": date})
         return redirect(url_for("index"))
     return render_template("add_user.html")
 
@@ -27,6 +28,7 @@ def edit_user(user_id):
     if request.method == "POST":
         user["name"] = request.form["name"]
         user["email"] = request.form["email"]
+        user["date"] = request.form["date"]
         return redirect(url_for("index"))
     return render_template("edit_user.html", user=user)
 
