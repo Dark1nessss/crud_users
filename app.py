@@ -1,18 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/managment_crud_users"
 mongo = PyMongo(app)
 
-
-# memoria local
-users = []
+# Todos os dados utilizadores
+utilizadores_mongodb = mongo.db.utilizadores.find()
+users = list(utilizadores_mongodb)
 
 @app.route("/")
 def index():
-    return render_template("index.html", users=users)
+    return render_template("index.html", users=users, str=str)
 
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
