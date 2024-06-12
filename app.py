@@ -18,6 +18,7 @@ def index():
         print(i)
     return render_template("index.html", users=users, str=str)
 
+# Aqui funciona se adicionar um user, mas no index, nao mostra os users
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
     if request.method == "POST":
