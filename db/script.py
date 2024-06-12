@@ -38,3 +38,18 @@ def inserirUtilizador(
     documento_inserido_user01 = colecao_utilizadores.insert_one(user01)
     if documento_inserido_user01:
         print(f"Utilizador '{username}' inserido com sucesso!")
+
+def pesquisarPrimeiroDocumento():
+    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
+    primeiro_user = colecao_utilizadores.find_one()
+    print(primeiro_user)
+
+def pesquisarUserUsername(Username):
+    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
+    documento_query = colecao_utilizadores.find({"username": Username})
+    for res in documento_query:
+        print(res)
+
+setupDB("managment_crud_users")
+inserirUtilizador("tskxz", "tanjil", "khan", "tanjil@gmail.com", "Rua de Sobreira 505", 123412341, "utilizador comum")
+pesquisarPrimeiroDocumento()
