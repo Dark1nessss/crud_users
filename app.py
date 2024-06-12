@@ -9,11 +9,10 @@ mongo = PyMongo(app)
 
 # Todos os dados utilizadores
 utilizadores_mongodb = mongo.db.utilizadores.find()
-
-
+users = list(utilizadores_mongodb)
+# Primeiro tentar buscar os users a partir do mongodb
 @app.route("/")
 def index():
-    users = list(utilizadores_mongodb)
     for i in users:
         print(i)
     return render_template("index.html", users=users, str=str)
