@@ -1,67 +1,71 @@
 import pymongo
+from bson import ObjectId
 
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 
-
 def setupDB(db_name):
-
     db = client[db_name]
 
     if db_name not in client.list_database_names():
-        print(f"Base de dados '{db_name}' criada com sucesso!")
+        print(f"Database '{db_name}' created successfully!")
     
-    utilizadores = db["utilizadores"]
-    if "utilizadores" not in db.list_collection_names():
-        print(f"Coleção utilizadores criada com sucesso!")
-    return db, utilizadores
+    movies = db["imdb"]
+    if "imdb" not in db.list_collection_names():
+        print(f"Collection 'imdb' created successfully!")
+    return db, movies
 
-def inserirUtilizador(username, email):
-    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
-    user = {
-        "username": username,
-        "email": email
+def inserirFilme(title, director, genre, score):
+    base_de_dados, colecao_filmes = setupDB("films")
+    movie = {
+        "Movie Title": title,
+        "Director": director,
+        "Genre": genre,
+        "score": score
     }
-    documento_inserido = colecao_utilizadores.insert_one(user)
+    documento_inserido = colecao_filmes.insert_one(movie)
     if documento_inserido:
-        print(f"Utilizador '{username}' inserido com sucesso!")
+        print(f"Movie '{title}' inserted successfully!")
 
-def pesquisarTodosUtilizadores():
-    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
-    return list(colecao_utilizadores.find())
+def pesquisarTodosFilmes():
+    base_de_dados, colecao_filmes = setupDB("films")
+    return list(colecao_filmes.find())
 
-def pesquisarUserPorID(user_id):
-    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
-    return colecao_utilizadores.find_one({"_id": user_id})
+def pesquisarFilmePorID(film_id):
+    base_de_dados, colecao_filmes = setupDB("films")
+    return colecao_filmes.find_one({"_id": ObjectId(film_id)})
 
-def atualizarUtilizador(user_id, username, email):
-    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
-    colecao_utilizadores.update_one({"_id": user_id}, {"$set": {"username": username, "email": email}})
-    print(f"Utilizador com ID {user_id} atualizado!")
+def atualizarFilme(film_id, title, director, genre, score):
+    base_de_dados, colecao_filmes = setupDB("films")
+    colecao_filmes.update_one(
+        {"_id": ObjectId(film_id)}, 
+        {"$set": {"Movie Title": title, "Director": director, "Genre": genre, "score": score}}
+    )
+    print(f"Movie with ID {film_id} updated!")
 
-def deletarUtilizador(user_id):
-    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
-    colecao_utilizadores.delete_one({"_id": user_id})
-    print(f"Utilizador com ID {user_id} deletado!")
-
+def deletarFilme(film_id):
+    base_de_dados, colecao_filmes = setupDB("films")
+    colecao_filmes.delete_one({"_id": ObjectId(film_id)})
+    print(f"Movie with ID {film_id} deleted!")
 
 def limpar():
-    base_de_dados, colecao_utilizadores = setupDB("managment_crud_users")
-    colecao_utilizadores.drop()
+    base_de_dados, colecao_filmes = setupDB("films")
+    colecao_filmes.drop()
 
 if __name__ == "__main__":
-    setupDB("managment_crud_users")
-    # Exemplo de inserção
-    inserirUtilizador("user1", "user1@example.com")
-    inserirUtilizador("user2", "user2@example.com")
+    setupDB("films")
+    
+    inserirFilme("Inception", "Christopher Nolan", ["Action", "Sci-Fi", "Thriller"], 8.8)
+    inserirFilme("The Dark Knight", "Christopher Nolan", ["Action", "Crime", "Drama"], 9.0)
+    inserirFilme("Interstellar", "Christopher Nolan", ["Adventure", "Drama", "Sci-Fi"], 8.6)
 
-    print("Todos os utilizadores:")
-    for user in pesquisarTodosUtilizadores():
-        print(user)
+    print("All movies:")
+    for movie in pesquisarTodosFilmes():
+        print(movie)
 
-    user_id = pesquisarTodosUtilizadores()[0]["_id"]
-    print(f"\nUtilizador com ID {user_id}:")
-    print(pesquisarUserPorID(user_id))
+    film_id = pesquisarTodosFilmes()[0]["_id"]
+    print(f"\nMovie with ID {film_id}:")
+    print(pesquisarFilmePorID(film_id))
 
-    atualizarUtilizador(user_id, "user1_updated", "user1_updated@example.com")
+    atualizarFilme(film_id, "Inception", "Christopher Nolan", ["Action", "Sci-Fi", "Thriller"], 8.9)
 
-    deletarUtilizador(user_id)
+    deletarFilme(film_id)
