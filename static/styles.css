@@ -129,3 +129,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
     -webkit-appearance: none;
 }
+
+.score {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.score.high {
+    background-color: #4CAF50; /* Green for high scores */
+}
+
+.score.medium {
+    background-color: #FF9800; /* Orange for medium scores */
+}
+
+.score.low {
+    background-color: #F44336; /* Red for low scores */
+}
