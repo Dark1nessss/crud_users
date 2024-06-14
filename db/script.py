@@ -1,71 +1,39 @@
-import pymongo
-from bson import ObjectId
+from pymongo import MongoClient
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-
-def setupDB(db_name):
+def setup_db(db_name):
+    client = MongoClient("mongodb://localhost:27017/")
     db = client[db_name]
+    collection = db["imdb"]
+    return db, collection
 
-    if db_name not in client.list_database_names():
-        print(f"Database '{db_name}' created successfully!")
-    
-    movies = db["imdb"]
-    if "imdb" not in db.list_collection_names():
-        print(f"Collection 'imdb' created successfully!")
-    return db, movies
-
-def inserirFilme(title, director, genre, score):
-    base_de_dados, colecao_filmes = setupDB("films")
-    movie = {
-        "Movie Title": title,
-        "Director": director,
-        "Genre": genre,
-        "score": score
-    }
-    documento_inserido = colecao_filmes.insert_one(movie)
-    if documento_inserido:
-        print(f"Movie '{title}' inserted successfully!")
+def inserir_filme(title, director, genre, score):
+    _, collection = setup_db("films")
+    existing_movie = collection.find_one({"Movie Title": title})
+    if existing_movie is None:
+        movie = {
+            "Movie Title": title,
+            "Director": director,
+            "Genre": genre,
+            "score": score,
+        }
+        documento_inserido = collection.insert_one(movie)
+        if documento_inserido:
+            print(f"Movie '{title}' inserted successfully!")
 
 def pesquisarTodosFilmes():
-    base_de_dados, colecao_filmes = setupDB("films")
-    return list(colecao_filmes.find())
+    _, collection = setup_db("films")
+    return list(collection.find())
 
 def pesquisarFilmePorID(film_id):
-    base_de_dados, colecao_filmes = setupDB("films")
-    return colecao_filmes.find_one({"_id": ObjectId(film_id)})
+    _, collection = setup_db("films")
+    return collection.find_one({"_id": film_id})
 
 def atualizarFilme(film_id, title, director, genre, score):
-    base_de_dados, colecao_filmes = setupDB("films")
-    colecao_filmes.update_one(
-        {"_id": ObjectId(film_id)}, 
-        {"$set": {"Movie Title": title, "Director": director, "Genre": genre, "score": score}}
-    )
+    _, collection = setup_db("films")
+    collection.update_one({"_id": film_id}, {"$set": {"Movie Title": title, "Director": director, "Genre": genre, "score": score}})
     print(f"Movie with ID {film_id} updated!")
 
 def deletarFilme(film_id):
-    base_de_dados, colecao_filmes = setupDB("films")
-    colecao_filmes.delete_one({"_id": ObjectId(film_id)})
+    _, collection = setup_db("films")
+    collection.delete_one({"_id": film_id})
     print(f"Movie with ID {film_id} deleted!")
-
-def limpar():
-    base_de_dados, colecao_filmes = setupDB("films")
-    colecao_filmes.drop()
-
-if __name__ == "__main__":
-    setupDB("films")
-    
-    inserirFilme("Inception", "Christopher Nolan", ["Action", "Sci-Fi", "Thriller"], 8.8)
-    inserirFilme("The Dark Knight", "Christopher Nolan", ["Action", "Crime", "Drama"], 9.0)
-    inserirFilme("Interstellar", "Christopher Nolan", ["Adventure", "Drama", "Sci-Fi"], 8.6)
-
-    print("All movies:")
-    for movie in pesquisarTodosFilmes():
-        print(movie)
-
-    film_id = pesquisarTodosFilmes()[0]["_id"]
-    print(f"\nMovie with ID {film_id}:")
-    print(pesquisarFilmePorID(film_id))
-
-    atualizarFilme(film_id, "Inception", "Christopher Nolan", ["Action", "Sci-Fi", "Thriller"], 8.9)
-
-    deletarFilme(film_id)

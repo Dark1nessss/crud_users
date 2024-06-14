@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from db.script import inserirUtilizador, pesquisarTodosUtilizadores, pesquisarUserPorID, atualizarUtilizador, deletarUtilizador
+from db.script import inserir_filme, pesquisarTodosFilmes, pesquisarFilmePorID, atualizarFilme, deletarFilme
 
 app = Flask(__name__)
 
-documents = [
+# Insert initial movie data if not present
+initial_movies = [
     {"Movie Title": "Inception", "Director": "Christopher Nolan", "Genre": ["Action", "Sci-Fi", "Thriller"], "score": 8.8},
     {"Movie Title": "The Dark Knight", "Director": "Christopher Nolan", "Genre": ["Action", "Crime", "Drama"], "score": 9.0},
     {"Movie Title": "Interstellar", "Director": "Christopher Nolan", "Genre": ["Adventure", "Drama", "Sci-Fi"], "score": 8.6},
@@ -18,47 +19,42 @@ documents = [
     {"Movie Title": "The Godfather: Part II", "Director": "Francis Ford Coppola", "Genre": ["Crime", "Drama"], "score": 9.0}
 ]
 
-def setup_db(db_name):
-    client = MongoClient("mongodb://localhost:27017/")
-    db = client[db_name]
-
-    collection = db["imdb"]
-    existing_movies = list(collection.find({}))
-    if not existing_movies:
-        collection.insert_many(documents)
-        print("Initial movies inserted into MongoDB.")
-
-    return db, collection
+# Insert initial data if not already present
+for movie in initial_movies:
+    inserir_filme(movie["Movie Title"], movie["Director"], movie["Genre"], movie["score"])
 
 @app.route("/")
 def index():
-    users = pesquisarTodosUtilizadores()
-    return render_template("index.html", users=users, str=str)
+    movies = pesquisarTodosFilmes()
+    return render_template("index.html", movies=movies, str=str)
 
-@app.route("/add_user", methods=["GET", "POST"])
-def add_user():
+@app.route("/add_movie", methods=["GET", "POST"])
+def add_movie():
     if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-        inserirUtilizador(username, email)
+        title = request.form["title"]
+        director = request.form["director"]
+        genre = request.form.getlist("genre")
+        score = float(request.form["score"])
+        inserir_filme(title, director, genre, score)
         return redirect(url_for("index"))
-    return render_template("add_user.html")
+    return render_template("add_movie.html")
 
-@app.route("/edit_user/<string:user_id>", methods=["GET", "POST"])
-def edit_user(user_id):
-    user = pesquisarUserPorID(ObjectId(user_id))
+@app.route("/edit_movie/<string:movie_id>", methods=["GET", "POST"])
+def edit_movie(movie_id):
+    movie = pesquisarFilmePorID(ObjectId(movie_id))
     if request.method == "POST":
-        username = request.form["username"]
-        email = request.form["email"]
-        atualizarUtilizador(ObjectId(user_id), username, email)
+        title = request.form["title"]
+        director = request.form["director"]
+        genre = request.form.getlist("genre")
+        score = float(request.form["score"])
+        atualizarFilme(ObjectId(movie_id), title, director, genre, score)
         return redirect(url_for("index"))
-    return render_template("edit_user.html", user=user, str=str)
+    return render_template("edit_movie.html", movie=movie, str=str)
 
-@app.route("/delete_user/<string:user_id>")
-def delete_user(user_id):
-    deletarUtilizador(ObjectId(user_id))
+@app.route("/delete_movie/<string:movie_id>")
+def delete_movie(movie_id):
+    deletarFilme(ObjectId(movie_id))
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    db, collection = setup_db("films")
     app.run(debug=True)
