@@ -130,6 +130,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     -webkit-appearance: none;
 }
 
+/* Score levels */
+
 .score {
     font-weight: bold;
     padding: 5px 10px;
@@ -147,4 +149,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .score.low {
     background-color: #F44336; /* Red for low scores */
+}
+
+
+
+/* Styles for the score label */
+label[for="score"] {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+input[type="number"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
