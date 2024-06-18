@@ -5,7 +5,6 @@ from db.script import inserir_filme, pesquisarTodosFilmes, pesquisarFilmePorID, 
 
 app = Flask(__name__)
 
-# Insert initial movie data if not present
 initial_movies = [
     {"Movie Title": "Inception", "Director": "Christopher Nolan", "Genre": ["Action", "Sci-Fi", "Thriller"], "score": 8.8},
     {"Movie Title": "The Dark Knight", "Director": "Christopher Nolan", "Genre": ["Action", "Crime", "Drama"], "score": 9.0},
@@ -19,7 +18,6 @@ initial_movies = [
     {"Movie Title": "The Godfather: Part II", "Director": "Francis Ford Coppola", "Genre": ["Crime", "Drama"], "score": 9.0}
 ]
 
-# Insert initial data if not already present
 for movie in initial_movies:
     inserir_filme(movie["Movie Title"], movie["Director"], movie["Genre"], movie["score"])
 
